@@ -29,6 +29,8 @@ if sys.platform == "win32":
     import win32gui
 
 from translate import _
+from base_ui import BaseInterfaceManager, BaseSettingsPanel, BaseInventoryOverview, BaseCampaignProgress, \
+    BaseConsoleOutput, BaseChannelList, BaseTrayIcon, BaseLoginForm, BaseWebsocketStatus, BaseStatusBar
 from cache import ImageCache
 from exceptions import MinerException, ExitRequest
 from utils import resource_path, set_root_icon, webopen, Game, _T
@@ -418,7 +420,7 @@ class SelectCombobox(ttk.Combobox):
 ###########################################
 
 
-class StatusBar:
+class StatusBar(BaseStatusBar):
     def __init__(self, manager: GUIManager, master: ttk.Widget):
         frame = ttk.LabelFrame(master, text=_("gui", "status", "name"), padding=(4, 0, 4, 4))
         frame.grid(column=0, row=0, columnspan=3, sticky="nsew", padx=2)
@@ -437,7 +439,7 @@ class _WSEntry(TypedDict):
     topics: int
 
 
-class WebsocketStatus:
+class WebsocketStatus(BaseWebsocketStatus):
     def __init__(self, manager: GUIManager, master: ttk.Widget):
         frame = ttk.LabelFrame(master, text=_("gui", "websocket", "name"), padding=(4, 0, 4, 4))
         frame.grid(column=0, row=1, sticky="nsew", padx=2)
@@ -508,7 +510,7 @@ class LoginData:
     token: str
 
 
-class LoginForm:
+class LoginForm(BaseLoginForm):
     def __init__(self, manager: GUIManager, master: ttk.Widget):
         self._manager = manager
         self._var = StringVar(master)
@@ -617,7 +619,7 @@ class _ProgressVars(TypedDict):
     drop: _DropVars
 
 
-class CampaignProgress:
+class CampaignProgress(BaseCampaignProgress):
     BAR_LENGTH = 420
 
     def __init__(self, manager: GUIManager, master: ttk.Widget):
@@ -779,7 +781,7 @@ class CampaignProgress:
             self._update_time(60)
 
 
-class ConsoleOutput:
+class ConsoleOutput(BaseConsoleOutput):
     def __init__(self, manager: GUIManager, master: ttk.Widget):
         frame = ttk.LabelFrame(master, text=_("gui", "output"), padding=(4, 0, 4, 4))
         frame.grid(column=0, row=3, columnspan=3, sticky="nsew", padx=2)
@@ -821,7 +823,7 @@ class _Buttons(TypedDict):
     load_points: ttk.Button
 
 
-class ChannelList:
+class ChannelList(BaseChannelList):
     def __init__(self, manager: GUIManager, master: ttk.Widget):
         self._manager = manager
         frame = ttk.LabelFrame(master, text=_("gui", "channels", "name"), padding=(4, 0, 4, 4))
@@ -1069,7 +1071,7 @@ class ChannelList:
         self._table.delete(iid)
 
 
-class TrayIcon:
+class TrayIcon(BaseTrayIcon):
     TITLE = "Twitch Drops Miner"
 
     def __init__(self, manager: GUIManager, master: ttk.Widget):
@@ -1218,7 +1220,7 @@ class CampaignDisplay(TypedDict):
     status: ttk.Label
 
 
-class InventoryOverview:
+class InventoryOverview(BaseInventoryOverview):
     def __init__(self, manager: GUIManager, master: ttk.Widget):
         self._manager = manager
         self._cache: ImageCache = manager._cache
@@ -1336,7 +1338,8 @@ class InventoryOverview:
             # refresh only if we're switching to the tab
             self.refresh()
 
-    def get_status(self, campaign: DropsCampaign) -> tuple[str, str]:
+    @staticmethod
+    def get_status(campaign: DropsCampaign) -> tuple[str, tk._Color]:
         if campaign.active:
             status_text: str = _("gui", "inventory", "status", "active")
             status_color: str = "green"
@@ -1483,7 +1486,8 @@ class InventoryOverview:
         self._drops.clear()
         self._campaigns.clear()
 
-    def update_progress(self, drop: TimedDrop, label: ttk.Label) -> None:
+    @staticmethod
+    def update_progress(drop: TimedDrop, label: ttk.Label) -> None:
         progress_text: str
         progress_color: str = ''
         if drop.is_claimed:
@@ -1546,7 +1550,7 @@ class _SettingsVars(TypedDict):
     tray_notifications: IntVar
 
 
-class SettingsPanel:
+class SettingsPanel(BaseSettingsPanel):
     AUTOSTART_NAME: str = "TwitchDropsMiner"
     AUTOSTART_KEY: str = "HKCU/Software/Microsoft/Windows/CurrentVersion/Run"
     PRIORITY_MODES: dict[PriorityMode, str] = {
@@ -2011,7 +2015,7 @@ class HelpTab:
 ##########################################
 
 
-class GUIManager:
+class GUIManager(BaseInterfaceManager):
     def __init__(self, twitch: Twitch):
         self._twitch: Twitch = twitch
         self._poll_task: asyncio.Task[NoReturn] | None = None
