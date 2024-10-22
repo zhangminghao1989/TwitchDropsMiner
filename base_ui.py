@@ -168,6 +168,10 @@ class BaseCampaignProgress(metaclass=ABCMeta):
     def display(self, drop, countdown, subone):
         pass
 
+    @abstractmethod
+    def minute_almost_done(self) -> bool:
+        pass
+
 
 class BaseConsoleOutput(metaclass=ABCMeta):
     @abstractmethod
@@ -259,6 +263,10 @@ class BaseInterfaceManager(metaclass=ABCMeta):
 
     @abstractmethod
     def save(self, force):
+        pass
+
+    @abstractmethod
+    def grab_attention(self, *, sound):
         pass
 
     @abstractmethod

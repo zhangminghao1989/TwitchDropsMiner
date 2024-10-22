@@ -16,7 +16,7 @@ if __name__ == "__main__":
     import traceback
     import tkinter as tk
     from tkinter import messagebox
-    from typing import NoReturn, TYPE_CHECKING
+    from typing import IO, NoReturn, TYPE_CHECKING
 
     import truststore
     truststore.inject_into_ssl()
@@ -202,7 +202,7 @@ if __name__ == "__main__":
             await client.shutdown()
         if not client.gui.close_requested:
             # user didn't request the closure
-            client.gui.tray.change_icon("error")
+            # client.gui.tray.change_icon("error")
             client.print(_("status", "terminated"))
             client.gui.status.update(_("gui", "status", "terminated"))
             # notify the user about the closure
