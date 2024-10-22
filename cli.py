@@ -302,6 +302,9 @@ class ProgressHandler(BaseCampaignProgress):
             self._timer_task.cancel()
             self._timer_task = None
 
+    def is_counting(self) -> bool:
+        return self._timer_task is not None
+
     def display(self,
                 drop: TimedDrop | None,
                 *,
@@ -555,6 +558,9 @@ class CLIManager(BaseInterfaceManager):
 
     def save(self, *, force: bool = False):
         pass
+
+    def grab_attention(self, *, sound: bool = True):
+        self.tray.restore()
 
     def set_games(self, games: abc.Iterable[Game]):
         self.settings.set_games(games)
