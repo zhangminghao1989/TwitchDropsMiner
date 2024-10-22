@@ -266,6 +266,10 @@ class BaseInterfaceManager(metaclass=ABCMeta):
         pass
 
     @abstractmethod
+    def grab_attention(self, *, sound):
+        pass
+
+    @abstractmethod
     def set_games(self, games):
         pass
 
