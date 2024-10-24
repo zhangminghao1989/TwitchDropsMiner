@@ -166,7 +166,7 @@ jobs:
 
             - Last build date: `${{steps.vars.outputs.date_now}}`
             - Reference commit: ${{github.sha}}
-          name: Branche cli development build
+          name: Development build
           prerelease: true
           removeArtifacts: true
-          tag: dev-build
+          tag: cli-build
