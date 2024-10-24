@@ -160,13 +160,13 @@ jobs:
           artifactErrorsFailBuild: true
           artifacts: artifacts/*/*
           body: |
-            **This is an automatically generated in-development pre-release version of the application, that includes the latest cli branch changes.**
+            This is an automatically generated in-development pre-release version of the application, that includes the latest **cli** branch changes.
             **⚠️ This build is not stable and may end up terminating with a fatal error. ⚠️**
             **Use at your own risk.**
 
             - Last build date: `${{steps.vars.outputs.date_now}}`
             - Reference commit: ${{github.sha}}
-          name: Development build
+          name: Branche cli development build
           prerelease: true
           removeArtifacts: true
           tag: dev-build
