@@ -3,7 +3,7 @@ name: Build
 on:
   push:
     branches:
-      - 'master'
+      - 'cli'
   pull_request:
   workflow_dispatch:
 
@@ -11,66 +11,6 @@ env:
   PYTHON_VERSION: '3.10'
 
 jobs:
-  windows:
-    name: Windows
-    runs-on: windows-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up variables
-        id: vars
-        run: |
-          Add-Content $env:GITHUB_OUTPUT "sha_short=$(git rev-parse --short HEAD)"
-
-      - name: Append git revision to project version
-        run: |
-          (Get-Content version.py) `
-          -Replace '^__version__\s*=\s*"[^"]+', "`$0.${{steps.vars.outputs.sha_short}}" |`
-          Out-File version.py
-
-      # Ensure Python version
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{env.PYTHON_VERSION}}
-
-      - name: Install project dependencies
-        run: |
-          python3 -m pip install wheel
-          python3 -m pip install -r requirements.txt
-
-      - name: Install UPX
-        run: |
-          Invoke-WebRequest -Uri https://github.com/upx/upx/releases/download/v4.0.2/upx-4.0.2-win64.zip -OutFile (Join-Path $env:Temp upx.zip)
-          Expand-Archive -LiteralPath (Join-Path $env:Temp upx.zip) -DestinationPath $env:Temp
-          Move-Item -Path (Join-Path $env:Temp upx-*) -Destination (Join-Path $env:Temp upx)
-          Add-Content $env:GITHUB_PATH (Join-Path $env:Temp upx)
-
-      - name: Install PyInstaller
-        run: |
-          python3 -m pip install pyinstaller
-
-      - name: Create portable executable
-        run: |
-          pyinstaller build.spec
-
-      - name: Create release folder
-        run: |
-          $FolderName = 'Twitch Drops Miner'
-          New-Item $FolderName -ItemType Directory
-          Copy-Item dist\*.exe $FolderName
-          Copy-Item manual.txt $FolderName
-          Compress-Archive -Path $FolderName -DestinationPath Twitch.Drops.Miner.Windows.zip
-
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          if-no-files-found: error
-          name: Twitch.Drops.Miner.Windows
-          path: Twitch.Drops.Miner.Windows.zip
-
   linux-pyinstaller:
     name: Linux (PyInstaller)
     runs-on: ubuntu-20.04
