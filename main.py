@@ -16,7 +16,7 @@ if __name__ == "__main__":
     import traceback
     import tkinter as tk
     from tkinter import messagebox
-    from typing import IO
+    from typing import NoReturn, TYPE_CHECKING
 
     import truststore
     truststore.inject_into_ssl()
@@ -29,7 +29,13 @@ if __name__ == "__main__":
     from utils import lock_file, resource_path, set_root_icon
     from constants import LOGGING_LEVELS, SELF_PATH, FILE_FORMATTER, LOG_PATH, LOCK_PATH
 
+    if TYPE_CHECKING:
+        from _typeshed import SupportsWrite
+
     warnings.simplefilter("default", ResourceWarning)
+
+    # import tracemalloc
+    # tracemalloc.start(3)
 
     if sys.version_info < (3, 10):
         raise RuntimeError("Python 3.10 or higher is required")
@@ -42,7 +48,7 @@ if __name__ == "__main__":
             self.status: int = 0
             self.message: str = ""
 
-        def _print_message(self, message: str, file: IO[str] | None = None) -> None:
+        def _print_message(self, message: str, file: SupportsWrite[str] | None = None) -> None:
             self._message.write(message)
             # print(message, file=self._message)
 

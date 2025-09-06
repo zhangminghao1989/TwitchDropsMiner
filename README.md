@@ -139,6 +139,7 @@ placed past the period character at the end.
 -->
 
 @guihkx - For the CI script, CI maintenance, and everything related to Linux builds.  
+@kWAYTV - For the implementation of the dark mode theme.  
 
 @Bamboozul - For the entirety of the Arabic (العربية) translation.  
 @Suz1e - For the entirety of the Chinese (简体中文) translation and revisions.  
@@ -157,6 +158,8 @@ placed past the period character at the end.
 @Patriot99 - For the Polish (Polski) translation and revisions (co-authored with @DevilXD).  
 @zarigata - For the entirety of the Portuguese (Português) translation.  
 @Sergo1217 - For the entirety of the Russian (Русский) translation.  
+@kilroy98 - For the Russian (Русский) translation corrections and revisions.  
 @Shofuu - For the entirety of the Spanish (Español) translation and revisions.  
 @alikdb - For the entirety of the Turkish (Türkçe) translation.  
 @Nollasko - For the entirety of the Ukrainian (Українська) translation and revisions.  
+@kilroy98 - For the Ukrainian (Українська) translation corrections and revisions.  
