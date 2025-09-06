@@ -14,7 +14,11 @@ from base_ui import BaseInterfaceManager, BaseSettingsPanel, BaseInventoryOvervi
     BaseConsoleOutput, BaseChannelList, BaseTrayIcon, BaseLoginForm, BaseWebsocketStatus, BaseStatusBar
 from exceptions import ExitRequest
 from utils import Game, _T
-from constants import (OUTPUT_FORMATTER)
+from constants import (
+    IS_PACKAGED,
+    SCRIPTS_PATH,
+    OUTPUT_FORMATTER
+)
 
 if TYPE_CHECKING:
     from twitch import Twitch
@@ -234,11 +238,13 @@ class SettingsHandler(BaseSettingsPanel):
 
 
 class ProgressHandler(BaseCampaignProgress):
-
+    ALMOST_DONE_SECONDS = 10
+    
     def __init__(self):
         self._window = curses.newwin(WINDOW_HEIGHT, WINDOW_WIDTH, 3, 0)
 
         self._drop: TimedDrop | None = None
+        self._seconds: int = 0
         self._timer_task: asyncio.Task[None] | None = None
 
         self._campaign_name: str = ""
@@ -254,14 +260,15 @@ class ProgressHandler(BaseCampaignProgress):
 
         self.display(None)
 
-    @staticmethod
-    def _divmod(minutes: int, seconds: int) -> tuple[int, int]:
-        if seconds < 60 and minutes > 0:
+    def _divmod(self, minutes: int) -> tuple[int, int]:
+        if self._seconds < 60 and minutes > 0:
             minutes -= 1
         hours, minutes = divmod(minutes, 60)
-        return hours, minutes
+        return (hours, minutes)
 
-    def _update_time(self, seconds: int):
+    def _update_time(self, seconds: int | None = None):
+        if seconds is not None:
+            self._seconds = seconds
         drop = self._drop
         if drop is not None:
             drop_minutes = drop.remaining_minutes
@@ -270,21 +277,19 @@ class ProgressHandler(BaseCampaignProgress):
             drop_minutes = 0
             campaign_minutes = 0
 
-        dseconds = seconds % 60
-
-        hours, minutes = self._divmod(drop_minutes, seconds)
+        dseconds = self._seconds % 60
+        hours, minutes = self._divmod(drop_minutes)
         self._drop_remaining = f"{hours:>2}:{minutes:02}:{dseconds:02}"
 
-        hours, minutes = self._divmod(campaign_minutes, seconds)
+        hours, minutes = self._divmod(campaign_minutes)
         self._campaign_remaining = f"{hours:>2}:{minutes:02}:{dseconds:02}"
 
     async def _timer_loop(self):
-        seconds = 60
-        self._update_time(seconds)
-        while seconds > 0:
+        self._update_time(60)
+        while self._seconds > 0:
             await asyncio.sleep(1)
-            seconds -= 1
-            self._update_time(seconds)
+            self._seconds -= 1
+            self._update_time()
         self._timer_task = None
 
     def start_timer(self):
@@ -302,8 +307,9 @@ class ProgressHandler(BaseCampaignProgress):
             self._timer_task.cancel()
             self._timer_task = None
 
-    def is_counting(self) -> bool:
-        return self._timer_task is not None
+    def minute_almost_done(self) -> bool:
+        # already or almost done
+        return self._timer_task is None or self._seconds <= self.ALMOST_DONE_SECONDS
 
     def display(self,
                 drop: TimedDrop | None,

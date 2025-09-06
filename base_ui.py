@@ -165,11 +165,11 @@ class BaseCampaignProgress(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def is_counting(self):
+    def display(self, drop, countdown, subone):
         pass
 
     @abstractmethod
-    def display(self, drop, countdown, subone):
+    def minute_almost_done(self) -> bool:
         pass
 
 

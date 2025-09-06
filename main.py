@@ -16,7 +16,7 @@ if __name__ == "__main__":
     import traceback
     import tkinter as tk
     from tkinter import messagebox
-    from typing import NoReturn, TYPE_CHECKING
+    from typing import IO, NoReturn, TYPE_CHECKING
 
     import truststore
     truststore.inject_into_ssl()
