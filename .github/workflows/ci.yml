@@ -3,7 +3,7 @@ name: Build
 on:
   push:
     branches:
-      - "master"
+      - 'cli'
   pull_request:
   workflow_dispatch:
 
@@ -249,7 +249,6 @@ jobs:
     name: Upload builds to Releases
     if: github.event_name != 'pull_request'
     needs:
-      - windows
       - linux-pyinstaller
       - linux-appimage
     runs-on: ubuntu-latest
@@ -285,7 +284,7 @@ jobs:
           artifactErrorsFailBuild: true
           artifacts: artifacts/*/*
           body: |
-            **This is an automatically generated in-development pre-release version of the application, that includes the latest master branch changes.**
+            This is an automatically generated in-development pre-release version of the application, that includes the latest **cli** branch changes.
             **⚠️ This build is not stable and may end up terminating with a fatal error. ⚠️**
             **Use at your own risk.**
 
@@ -294,4 +293,4 @@ jobs:
           name: Development build
           prerelease: true
           removeArtifacts: true
-          tag: dev-build
+          tag: cli-build
