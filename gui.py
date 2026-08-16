@@ -35,7 +35,7 @@ if sys.platform == "darwin":
 
 from translate import _
 from base_ui import BaseInterfaceManager, BaseSettingsPanel, BaseInventoryOverview, BaseCampaignProgress, \
-    BaseConsoleOutput, BaseChannelList, BaseTrayIcon, BaseLoginForm, BaseWebsocketStatus, BaseStatusBar
+    BaseConsoleOutput, BaseChannelList, BaseTrayIcon, BaseLoginForm, BaseWebsocketStatus, BaseStatusBar, BaseHelpTab
 from cache import ImageCache
 from exceptions import MinerException, ExitRequest
 from utils import resource_path, set_root_icon, webopen, task_wrapper, Game, _T
@@ -2091,7 +2091,7 @@ class SettingsPanel(BaseSettingsPanel):
             self.update_excluded_choices()
 
 
-class HelpTab:
+class HelpTab(BaseHelpTab):
     WIDTH = 800
 
     def __init__(self, manager: GUIManager, master: ttk.Widget):

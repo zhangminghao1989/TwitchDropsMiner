@@ -212,6 +212,10 @@ class BaseChannelList(metaclass=ABCMeta):
     def remove(self, channel):
         pass
 
+class BaseHelpTab(metaclass=ABCMeta):
+    @abstractmethod
+    def __init__():
+        pass
 
 class BaseInterfaceManager(metaclass=ABCMeta):
     @abstractmethod
